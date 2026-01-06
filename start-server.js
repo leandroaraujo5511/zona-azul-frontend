@@ -51,11 +51,13 @@ const serveJsonPath = path.join(__dirname, 'serve.json');
 const serveArgs = ['-s', 'dist', '-l', PORT.toString()];
 
 // O serve.json deve estar na raiz do projeto (não no dist)
-// O serve procura o arquivo relativo ao diretório de trabalho atual
+// IMPORTANTE: Quando usamos -s dist, o serve muda o cwd para dist
+// Por isso precisamos usar o caminho absoluto do serve.json
 if (fs.existsSync(serveJsonPath)) {
-  // Usar caminho relativo 'serve.json' (serve procura a partir do cwd que é __dirname)
-  serveArgs.push('-c', 'serve.json');
+  // Usar caminho absoluto para garantir que o serve encontre o arquivo
+  serveArgs.push('-c', serveJsonPath);
   console.log('✅ Usando serve.json da raiz do projeto');
+  console.log(`   Caminho: ${serveJsonPath}`);
 } else {
   console.log('⚠️  serve.json não encontrado na raiz, usando configuração padrão do serve');
   console.log(`   Procurando em: ${serveJsonPath}`);
