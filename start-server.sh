@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Script para iniciar o servidor frontend em produção
-# Picos Parking Frontend
+# Zona Azul Frontend
 
 set -e
 
-echo "🚀 Iniciando Picos Parking Frontend..."
+echo "🚀 Iniciando Zona Azul Frontend..."
 
 # Cores para output
 GREEN='\033[0;32m'
@@ -24,15 +24,15 @@ if ! command -v serve &> /dev/null; then
     npm install -g serve
 fi
 
-# Porta (padrão 5173, pode ser alterada)
+# Porta (padrão 5173, pode ser alterada via variável de ambiente)
 PORT=${PORT:-5173}
 
 echo -e "${GREEN}✅ Iniciando servidor na porta ${PORT}...${NC}"
 echo -e "${GREEN}📱 Acesse: http://localhost:${PORT}${NC}"
 echo ""
 
-# Iniciar servidor
-serve -s dist -l $PORT
+# Iniciar servidor com configuração
+serve -s dist -l $PORT -c serve.json
 
 
 
