@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Script para iniciar o servidor frontend em produção
 # Zona Azul Frontend

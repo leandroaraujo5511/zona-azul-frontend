@@ -10,7 +10,8 @@
     "build:prod": "vite build --mode production",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "node start-server.sh"
+    "start": "node start-server.js",
+    "start:sh": "sh start-server.sh"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
