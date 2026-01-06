@@ -34,10 +34,10 @@ export function Sidebar() {
     >
       {/* Logo */}
       <div className="h-16 flex items-center px-4 border-b border-sidebar-border">
-        <Car className="h-8 w-8 text-sidebar-primary flex-shrink-0" />
+        <img src="../public/images/logo.png" alt="Picos Parking" width={40} height={40} />
         {!collapsed && (
           <span className="ml-3 font-bold text-lg text-sidebar-accent-foreground">
-            Zona Azul
+            Picos Parking
           </span>
         )}
       </div>

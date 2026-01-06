@@ -1,22 +1,18 @@
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { StatusBadge } from '@/components/ui/StatusBadge';
-import { Search, Car, Clock, MapPin, AlertCircle, CheckCircle, XCircle } from 'lucide-react';
-import { mockActiveParkings, ActiveParking } from '@/services/mockData';
+import { Search, Car, Clock, MapPin, AlertCircle, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { parkingService } from '@/services/parking.service';
+import { Parking } from '@/types/api';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-interface SearchResult {
-  found: boolean;
-  parking?: ActiveParking;
-}
-
 export default function PlateLookup() {
   const [searchPlate, setSearchPlate] = useState('');
-  const [isSearching, setIsSearching] = useState(false);
-  const [result, setResult] = useState<SearchResult | null>(null);
+  const [enabled, setEnabled] = useState(false);
 
   const formatPlate = (value: string) => {
     // Remove non-alphanumeric characters and convert to uppercase
@@ -31,25 +27,18 @@ export default function PlateLookup() {
     return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 7)}`;
   };
 
-  const handleSearch = async () => {
+  // Query for parking lookup
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ['parking-by-plate', searchPlate.replace(/[^A-Z0-9]/g, '').toUpperCase()],
+    queryFn: () => parkingService.getParkingByPlate(searchPlate.replace(/[^A-Z0-9]/g, '').toUpperCase()),
+    enabled: enabled && searchPlate.trim().length > 0,
+    retry: false,
+  });
+
+  const handleSearch = () => {
     if (!searchPlate.trim()) return;
-
-    setIsSearching(true);
-    setResult(null);
-
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 600));
-
-    const normalizedSearch = searchPlate.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
-    const foundParking = mockActiveParkings.find(p => 
-      p.plate.replace(/[^a-zA-Z0-9]/g, '').toUpperCase() === normalizedSearch
-    );
-
-    setResult({
-      found: !!foundParking,
-      parking: foundParking,
-    });
-    setIsSearching(false);
+    setEnabled(true);
+    refetch();
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -58,25 +47,38 @@ export default function PlateLookup() {
     }
   };
 
-  const formatDateTime = (date: Date) => {
+  const formatDateTime = (date: string | Date) => {
     return format(new Date(date), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR });
   };
 
-  const getTimeRemaining = (endTime: Date) => {
-    const now = new Date();
-    const end = new Date(endTime);
-    const diff = end.getTime() - now.getTime();
-    
-    if (diff <= 0) return 'Expirado';
-    
-    const minutes = Math.floor(diff / 60000);
-    if (minutes < 60) {
-      return `${minutes} minutos`;
+  const getTimeRemaining = (parking: Parking) => {
+    if (!parking.timeRemaining && parking.timeRemaining !== 0) {
+      const now = new Date();
+      const end = new Date(parking.expectedEndTime);
+      const diff = end.getTime() - now.getTime();
+      
+      if (diff <= 0) return 'Expirado';
+      
+      const minutes = Math.floor(diff / 60000);
+      if (minutes < 60) {
+        return `${minutes} minutos`;
+      }
+      const hours = Math.floor(minutes / 60);
+      const remainingMinutes = minutes % 60;
+      return `${hours}h ${remainingMinutes}min`;
     }
-    const hours = Math.floor(minutes / 60);
-    const remainingMinutes = minutes % 60;
+
+    if (parking.timeRemaining <= 0) return 'Expirado';
+    if (parking.timeRemaining < 60) {
+      return `${parking.timeRemaining} minutos`;
+    }
+    const hours = Math.floor(parking.timeRemaining / 60);
+    const remainingMinutes = parking.timeRemaining % 60;
     return `${hours}h ${remainingMinutes}min`;
   };
+
+  const result = data;
+  const hasSearched = enabled;
 
   return (
     <DashboardLayout>
@@ -97,7 +99,10 @@ export default function PlateLookup() {
               <Input
                 placeholder="Digite a placa (ex: ABC-1234)"
                 value={searchPlate}
-                onChange={(e) => setSearchPlate(formatPlate(e.target.value))}
+                onChange={(e) => {
+                  setSearchPlate(formatPlate(e.target.value));
+                  setEnabled(false);
+                }}
                 onKeyPress={handleKeyPress}
                 className="pl-12 h-14 text-lg font-mono uppercase tracking-wider"
                 maxLength={8}
@@ -105,12 +110,12 @@ export default function PlateLookup() {
             </div>
             <Button 
               onClick={handleSearch}
-              disabled={isSearching || !searchPlate.trim()}
+              disabled={isLoading || !searchPlate.trim()}
               className="h-14 px-8"
             >
-              {isSearching ? (
+              {isLoading ? (
                 <div className="flex items-center gap-2">
-                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-primary-foreground border-t-transparent" />
+                  <Loader2 className="h-5 w-5 animate-spin" />
                   Buscando...
                 </div>
               ) : (
@@ -121,29 +126,26 @@ export default function PlateLookup() {
               )}
             </Button>
           </div>
-
-          {/* Quick Search Suggestions */}
-          <div className="mt-4 flex flex-wrap gap-2">
-            <span className="text-sm text-muted-foreground">Testar com:</span>
-            {['ABC-1234', 'DEF-5678', 'GHI-9012'].map((plate) => (
-              <button
-                key={plate}
-                onClick={() => {
-                  setSearchPlate(plate);
-                  setTimeout(handleSearch, 100);
-                }}
-                className="text-sm font-mono text-primary hover:underline"
-              >
-                {plate}
-              </button>
-            ))}
-          </div>
         </div>
 
         {/* Result */}
-        {result && (
+        {hasSearched && (
           <div className="animate-slide-in">
-            {result.found && result.parking ? (
+            {isLoading ? (
+              <div className="flex items-center justify-center h-64 bg-card border border-border rounded-xl">
+                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+              </div>
+            ) : error ? (
+              <div className="bg-card border border-destructive rounded-xl p-8 text-center">
+                <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-foreground mb-2">
+                  Erro ao consultar
+                </h3>
+                <p className="text-muted-foreground">
+                  Não foi possível consultar a placa. Tente novamente.
+                </p>
+              </div>
+            ) : result?.found && result.parking ? (
               <div className="bg-card border border-border rounded-xl overflow-hidden">
                 {/* Status Header */}
                 <div className={`p-4 ${
@@ -186,7 +188,8 @@ export default function PlateLookup() {
                         <MapPin className="h-4 w-4" />
                         <span className="text-sm">Zona</span>
                       </div>
-                      <p className="font-semibold text-foreground">{result.parking.zoneName}</p>
+                      <p className="font-semibold text-foreground">{result.parking.zone?.name || 'N/A'}</p>
+                      <p className="text-sm text-muted-foreground">{result.parking.zone?.address || ''}</p>
                     </div>
                     <div className="space-y-1">
                       <div className="flex items-center gap-2 text-muted-foreground">
@@ -200,10 +203,10 @@ export default function PlateLookup() {
                     <div className="space-y-1">
                       <div className="flex items-center gap-2 text-muted-foreground">
                         <Clock className="h-4 w-4" />
-                        <span className="text-sm">Término</span>
+                        <span className="text-sm">Término Previsto</span>
                       </div>
                       <p className="font-semibold text-foreground">
-                        {formatDateTime(result.parking.endTime)}
+                        {formatDateTime(result.parking.expectedEndTime)}
                       </p>
                     </div>
                     <div className="space-y-1">
@@ -218,7 +221,7 @@ export default function PlateLookup() {
                           ? 'text-warning'
                           : 'text-success'
                       }`}>
-                        {getTimeRemaining(result.parking.endTime)}
+                        {getTimeRemaining(result.parking)}
                       </p>
                     </div>
                   </div>
@@ -242,7 +245,7 @@ export default function PlateLookup() {
         )}
 
         {/* Instructions */}
-        {!result && (
+        {!hasSearched && (
           <div className="bg-muted/50 rounded-lg p-6">
             <h3 className="font-semibold text-foreground mb-3">Instruções para Fiscalização</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">

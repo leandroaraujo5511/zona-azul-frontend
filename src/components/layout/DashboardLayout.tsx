@@ -11,6 +11,7 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const { isAuthenticated, isLoading } = useAuth();
 
+  // Show loading while checking authentication
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -19,6 +20,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     );
   }
 
+  // Only redirect if we're sure user is not authenticated
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }

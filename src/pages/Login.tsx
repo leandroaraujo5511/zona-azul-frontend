@@ -38,16 +38,16 @@ export default function Login() {
       return;
     }
 
-    const success = await login(email, password);
+    const result = await login(email, password);
     
-    if (success) {
+    if (result.success) {
       toast({
         title: 'Login realizado com sucesso',
         description: 'Bem-vindo ao Sistema Zona Azul',
       });
       navigate('/dashboard');
     } else {
-      setError('E-mail ou senha inválidos');
+      setError(result.error || 'E-mail ou senha inválidos');
     }
   };
 
@@ -57,13 +57,13 @@ export default function Login() {
       <div className="hidden lg:flex lg:w-1/2 bg-sidebar items-center justify-center p-12">
         <div className="max-w-md text-center">
           <div className="flex items-center justify-center mb-8">
-            <Car className="h-20 w-20 text-sidebar-primary" />
+            <img src="../public/images/logo.png" alt="Picos Parking" width={100} height={100} />
           </div>
           <h1 className="text-4xl font-bold text-sidebar-accent-foreground mb-4">
-            Zona Azul
+            Picos Parking
           </h1>
           <p className="text-lg text-sidebar-foreground">
-            Sistema de Gerenciamento de Estacionamento Rotativo
+            Sistema de Estacionamento Rotativo
           </p>
           <div className="mt-12 grid grid-cols-2 gap-6 text-left">
             <div className="bg-sidebar-accent rounded-lg p-4">
@@ -83,8 +83,8 @@ export default function Login() {
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
           <div className="lg:hidden flex items-center justify-center mb-8">
-            <Car className="h-12 w-12 text-primary" />
-            <span className="ml-3 text-2xl font-bold text-foreground">Zona Azul</span>
+            <img src="../public/images/logo.png" alt="Picos Parking" width={60} height={60} />
+            <span className="ml-3 text-2xl font-bold text-foreground">Picos Parking</span>
           </div>
 
           <div className="bg-card rounded-xl border border-border p-8 shadow-lg">
@@ -151,9 +151,7 @@ export default function Login() {
               </Button>
             </form>
 
-            <p className="mt-6 text-center text-sm text-muted-foreground">
-              Use qualquer e-mail válido e senha com 6+ caracteres
-            </p>
+            
           </div>
         </div>
       </div>
