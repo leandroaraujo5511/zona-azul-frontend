@@ -46,6 +46,14 @@ fi
 echo -e "${GREEN}✅ Build concluído com sucesso!${NC}"
 echo -e "${GREEN}📁 Arquivos gerados em: dist/${NC}"
 
+# Verificar se serve.json existe na raiz (necessário para o servidor)
+if [ ! -f "serve.json" ]; then
+  echo -e "${YELLOW}⚠️  serve.json não encontrado na raiz do projeto${NC}"
+  echo -e "${YELLOW}   O servidor funcionará com configuração padrão${NC}"
+else
+  echo -e "${GREEN}✅ serve.json encontrado${NC}"
+fi
+
 # Verificar se serve está instalado globalmente
 if ! command -v serve &> /dev/null; then
   echo -e "${YELLOW}⚠️  'serve' não encontrado. Instalando...${NC}"

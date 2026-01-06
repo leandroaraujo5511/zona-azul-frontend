@@ -46,11 +46,19 @@ console.log(`✅ Iniciando servidor na porta ${PORT}...`);
 console.log(`📱 Acesse: http://localhost:${PORT}`);
 console.log('');
 
-// Verificar se serve.json existe
+// Verificar se serve.json existe (na raiz do projeto, não no dist)
 const serveJsonPath = path.join(__dirname, 'serve.json');
 const serveArgs = ['-s', 'dist', '-l', PORT.toString()];
+
+// O serve.json deve estar na raiz do projeto (não no dist)
+// O serve procura o arquivo relativo ao diretório de trabalho atual
 if (fs.existsSync(serveJsonPath)) {
+  // Usar caminho relativo 'serve.json' (serve procura a partir do cwd que é __dirname)
   serveArgs.push('-c', 'serve.json');
+  console.log('✅ Usando serve.json da raiz do projeto');
+} else {
+  console.log('⚠️  serve.json não encontrado na raiz, usando configuração padrão do serve');
+  console.log(`   Procurando em: ${serveJsonPath}`);
 }
 
 // Iniciar servidor
