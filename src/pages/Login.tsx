@@ -57,7 +57,7 @@ export default function Login() {
       <div className="hidden lg:flex lg:w-1/2 bg-sidebar items-center justify-center p-12">
         <div className="max-w-md text-center">
           <div className="flex items-center justify-center mb-8">
-            <img src="../public/images/logo.png" alt="Picos Parking" width={100} height={100} />
+            <img src="/images/logo.png" alt="Picos Parking" width={100} height={100} />
           </div>
           <h1 className="text-4xl font-bold text-sidebar-accent-foreground mb-4">
             Picos Parking
@@ -83,7 +83,7 @@ export default function Login() {
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
           <div className="lg:hidden flex items-center justify-center mb-8">
-            <img src="../public/images/logo.png" alt="Picos Parking" width={60} height={60} />
+            <img src="/images/logo.png" alt="Picos Parking" width={60} height={60} />
             <span className="ml-3 text-2xl font-bold text-foreground">Picos Parking</span>
           </div>
 

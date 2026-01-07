@@ -34,7 +34,7 @@ export function Sidebar() {
     >
       {/* Logo */}
       <div className="h-16 flex items-center px-4 border-b border-sidebar-border">
-        <img src="../public/images/logo.png" alt="Picos Parking" width={40} height={40} />
+        <img src="/images/logo.png" alt="Picos Parking" width={40} height={40} />
         {!collapsed && (
           <span className="ml-3 font-bold text-lg text-sidebar-accent-foreground">
             Picos Parking
