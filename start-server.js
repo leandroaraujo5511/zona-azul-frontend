@@ -48,10 +48,9 @@ console.log('');
 
 // Verificar se serve.json existe (na raiz do projeto, não no dist)
 const serveJsonPath = path.join(__dirname, 'serve.json');
-// IMPORTANTE: Usar 0.0.0.0 para escutar em todas as interfaces (necessário para Docker/proxy)
-// O serve aceita formato: -l tcp://0.0.0.0:PORT ou apenas -l 0.0.0.0:PORT
-// Vamos usar o formato mais simples que funciona: -l 0.0.0.0:PORT
-const serveArgs = ['-s', 'dist', '-l', `0.0.0.0:${PORT}`];
+// IMPORTANTE: O serve por padrão escuta em todas as interfaces (0.0.0.0) quando usado em containers
+// Usamos apenas a porta, e o serve automaticamente escuta em 0.0.0.0
+const serveArgs = ['-s', 'dist', '-l', PORT.toString()];
 
 // O serve.json deve estar na raiz do projeto (não no dist)
 // IMPORTANTE: Quando usamos -s dist, o serve muda o cwd para dist
@@ -66,7 +65,8 @@ if (fs.existsSync(serveJsonPath)) {
   console.log(`   Procurando em: ${serveJsonPath}`);
 }
 
-console.log(`🌐 Servidor escutando em 0.0.0.0:${PORT} (acessível externamente)`);
+// O serve escuta em todas as interfaces por padrão em ambientes containerizados
+console.log(`🌐 Servidor escutando na porta ${PORT} (acessível externamente)`);
 
 // Iniciar servidor
 const serveProcess = spawn('serve', serveArgs, {

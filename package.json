@@ -10,7 +10,8 @@
     "build:prod": "vite build --mode production",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "node start-server.js",
+    "start": "node server.js",
+    "start:serve": "node start-server.js",
     "start:sh": "sh start-server.sh"
   },
   "dependencies": {
