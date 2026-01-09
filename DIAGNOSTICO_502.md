@@ -186,3 +186,4 @@ Se o servidor funcionar manualmente mas não no EasyPanel:
 - Verifique se o EasyPanel está gerenciando o processo corretamente
 - Considere usar um processo manager como PM2 (se necessário)
 
+

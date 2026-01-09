@@ -16,6 +16,15 @@ export default function Login() {
   const { toast } = useToast();
 
   if (isAuthenticated) {
+    // Get user from localStorage to check role
+    const storedUser = localStorage.getItem('zonaazul_user');
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      // Redirect based on role
+      if (user.role === 'fiscal') {
+        return <Navigate to="/fiscal/dashboard" replace />;
+      }
+    }
     return <Navigate to="/dashboard" replace />;
   }
 
@@ -45,7 +54,20 @@ export default function Login() {
         title: 'Login realizado com sucesso',
         description: 'Bem-vindo ao Sistema Zona Azul',
       });
-      navigate('/dashboard');
+      
+      // Get user from localStorage to check role
+      const storedUser = localStorage.getItem('zonaazul_user');
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        // Redirect based on role
+        if (user.role === 'fiscal') {
+          navigate('/fiscal/dashboard');
+        } else {
+          navigate('/dashboard');
+        }
+      } else {
+        navigate('/dashboard');
+      }
     } else {
       setError(result.error || 'E-mail ou senha inválidos');
     }

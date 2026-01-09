@@ -36,7 +36,10 @@ api.interceptors.response.use(
         const isLoginPage = window.location.pathname === '/login';
         const isLoginRequest = error.config?.url?.includes('/auth/login');
         
-        if (!isLoginPage && !isLoginRequest) {
+        // Don't redirect if we're on a public notification page
+        const isPublicNotificationPage = window.location.pathname.startsWith('/notificacao');
+        
+        if (!isLoginPage && !isLoginRequest && !isPublicNotificationPage) {
           // Clear tokens and redirect to login
           localStorage.removeItem('zonaazul_token');
           localStorage.removeItem('zonaazul_refresh_token');

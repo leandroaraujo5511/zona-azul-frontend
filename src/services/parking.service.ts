@@ -44,7 +44,21 @@ export const parkingService = {
     );
     return response.data;
   },
+
+  /**
+   * Create avulso parking (Fiscal/Admin)
+   * This method handles finding/creating vehicle and creating parking
+   */
+  async createAvulsoParking(input: {
+    plate: string;
+    zoneId: string;
+    requestedMinutes: number;
+  }): Promise<Parking> {
+    const response = await api.post<Parking>('/parkings/avulso', input);
+    return response.data;
+  },
 };
+
 
 
 

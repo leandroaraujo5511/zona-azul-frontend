@@ -131,6 +131,8 @@ export interface Parking {
 export interface ParkingByPlateResponse {
   found: boolean;
   parking: Parking | null;
+  canCreateNotification?: boolean;
+  reason?: string;
 }
 
 export interface ParkingsListResponse {

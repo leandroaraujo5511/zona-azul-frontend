@@ -68,3 +68,4 @@ Após configurar, o EasyPanel vai:
 
 Verifique os logs no EasyPanel e compare com o guia completo em `EASYPANEL.md`
 
+

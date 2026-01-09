@@ -1,38 +1,36 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  MapPin, 
-  Search, 
-  History, 
+import {
+  LayoutDashboard,
+  Search,
+  FileText,
+  Car,
   LogOut,
   ChevronLeft,
   ChevronRight,
-  UserPlus,
-  Receipt
+  Receipt,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 
 const menuItems = [
-  { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/zones', label: 'Gestão de Zonas', icon: MapPin },
-  { path: '/plate-lookup', label: 'Consulta de Placa', icon: Search },
-  { path: '/history', label: 'Histórico', icon: History },
-  { path: '/admin/settlements', label: 'Revisar Prestações', icon: Receipt },
-  { path: '/admin/fiscals/new', label: 'Cadastrar Fiscal', icon: UserPlus },
+  { path: '/fiscal/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { path: '/fiscal/plate-lookup', label: 'Consulta de Placa', icon: Search },
+  { path: '/fiscal/notifications', label: 'Notificações', icon: FileText },
+  { path: '/fiscal/parkings', label: 'Estacionamentos', icon: Car },
+  { path: '/fiscal/settlements', label: 'Prestação de Contas', icon: Receipt },
 ];
 
-export function Sidebar() {
+export function FiscalSidebar() {
   const { logout } = useAuth();
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <aside 
+    <aside
       className={cn(
-        "bg-sidebar text-sidebar-foreground flex flex-col transition-all duration-300 relative",
-        collapsed ? "w-16" : "w-64"
+        'bg-sidebar text-sidebar-foreground flex flex-col transition-all duration-300 relative',
+        collapsed ? 'w-16' : 'w-64'
       )}
     >
       {/* Logo */}
@@ -40,7 +38,7 @@ export function Sidebar() {
         <img src="/images/logo.png" alt="Picos Parking" width={40} height={40} />
         {!collapsed && (
           <span className="ml-3 font-bold text-lg text-sidebar-accent-foreground">
-            Picos Parking
+            Fiscal
           </span>
         )}
       </div>
@@ -59,23 +57,21 @@ export function Sidebar() {
           {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
-            
+
             return (
               <li key={item.path}>
                 <NavLink
                   to={item.path}
                   className={cn(
-                    "flex items-center px-3 py-3 rounded-lg transition-all duration-200",
-                    isActive 
-                      ? "bg-sidebar-primary text-sidebar-primary-foreground" 
-                      : "hover:bg-sidebar-accent text-sidebar-foreground hover:text-sidebar-accent-foreground"
+                    'flex items-center px-3 py-3 rounded-lg transition-all duration-200',
+                    isActive
+                      ? 'bg-sidebar-primary text-sidebar-primary-foreground'
+                      : 'hover:bg-sidebar-accent text-sidebar-foreground hover:text-sidebar-accent-foreground'
                   )}
                   title={collapsed ? item.label : undefined}
                 >
                   <Icon className="h-5 w-5 flex-shrink-0" />
-                  {!collapsed && (
-                    <span className="ml-3 font-medium">{item.label}</span>
-                  )}
+                  {!collapsed && <span className="ml-3 font-medium">{item.label}</span>}
                 </NavLink>
               </li>
             );
@@ -88,10 +84,10 @@ export function Sidebar() {
         <button
           onClick={logout}
           className={cn(
-            "flex items-center w-full px-3 py-3 rounded-lg transition-colors",
-            "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+            'flex items-center w-full px-3 py-3 rounded-lg transition-colors',
+            'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
           )}
-          title={collapsed ? "Sair" : undefined}
+          title={collapsed ? 'Sair' : undefined}
         >
           <LogOut className="h-5 w-5 flex-shrink-0" />
           {!collapsed && <span className="ml-3 font-medium">Sair</span>}
@@ -100,3 +96,4 @@ export function Sidebar() {
     </aside>
   );
 }
+

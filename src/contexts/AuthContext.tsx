@@ -64,7 +64,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const fullUser = await authService.getCurrentUser();
 
-        if (fullUser.role !== 'admin') {
+        // Allow admin and fiscal roles
+        if (fullUser.role !== 'admin' && fullUser.role !== 'fiscal') {
           setIsLoading(false);
           return { success: false, error: 'Você não tem permissão para acessar este aplicativo.' };
         }
@@ -87,6 +88,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         };
+        
+        // Allow admin and fiscal roles
+        if (mappedUser.role !== 'admin' && mappedUser.role !== 'fiscal') {
+          setIsLoading(false);
+          return { success: false, error: 'Você não tem permissão para acessar este aplicativo.' };
+        }
+        
         localStorage.setItem('zonaazul_user', JSON.stringify(mappedUser));
         setUser(mappedUser);
       }

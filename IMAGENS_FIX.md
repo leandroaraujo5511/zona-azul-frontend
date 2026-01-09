@@ -87,3 +87,4 @@ Se o arquivo existir, as imagens devem aparecer corretamente na aplicação.
 
 **Última atualização**: Janeiro 2025
 
+

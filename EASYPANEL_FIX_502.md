@@ -231,3 +231,4 @@ Mas isso geralmente não é necessário - o EasyPanel deve gerenciar o processo 
 
 **Última atualização**: Janeiro 2025
 
+

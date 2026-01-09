@@ -93,3 +93,4 @@ O EasyPanel precisa que o processo **permaneça rodando**. O `server.js` já est
 
 Se o processo morrer imediatamente, verifique os logs para erros.
 
+

@@ -140,3 +140,4 @@ Se funcionar manualmente, o problema está na configuração do EasyPanel.
 3. Verifique a configuração de porta
 4. Se necessário, atualize o `start-server.js` para garantir que escute em `0.0.0.0`
 
+
